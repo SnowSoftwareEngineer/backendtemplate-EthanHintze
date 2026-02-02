@@ -13,6 +13,18 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+using (var scop = app.Builder.Services.CreateScope())
+{
+    var config = scop.ServiceProvider.GetRequiredService<IConfiguration>();
+
+    var connstring = config.GetConnectionString("DefaultConnection");
+
+    using var conn = new Npgsql.NpgsqlConnection(connstring);
+    conn.Open();
+    console.WriteLine("postrges connected successfully.");
+}
+
+
 var app = builder.Build();
 app.UseCors();
 
